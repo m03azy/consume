@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Data</title>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="data-container">
+        <!-- Data will be displayed here -->
+    </div>
+
+    <script>
+        // Function to fetch and display data using jQuery AJAX
+        function fetchData() {
+            $.ajax({
+                url: 'http://localhost/analytics/users',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Call a function to render the data in the DOM
+                    renderData(data.data.users);
+                },
+                error: function (error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        }
+
+        // Function to render the data in the DOM
+        function renderData(users) {
+            const container = $('#data-container');
+            const table = $('<table>').addClass('user-table');
+            
+            // Create table headers
+            const tableHeaders = ['ID', 'First Name', 'Last Name', 'Age', 'Username'];
+            const thead = $('<thead>');
+            const headerRow = $('<tr>');
+            $.each(tableHeaders, function (index, headerText) {
+                headerRow.append($('<th>').text(headerText));
+            });
+            thead.append(headerRow);
+            table.append(thead);
+
+            // Create table rows for each user
+            const tbody = $('<tbody>');
+            $.each(users, function (index, user) {
+                const row = $('<tr>');
+                const userData = [user.id, user.first_name, user.last_name, user.age, user.username];
+                $.each(userData, function (index, text) {
+                    row.append($('<td>').text(text));
+                });
+                tbody.append(row);
+            });
+            table.append(tbody);
+
+            // Append the table to the container
+            container.append(table);
+        }
+
+        // Call the fetchData function to initiate the AJAX request
+        fetchData();
+    </script>
+</body>
+</html>
